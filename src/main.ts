@@ -1,4 +1,4 @@
-import './style.css'
+import './new.css'
 
 import { Week } from './models/week';
 import { WeekService } from './services/week_service';
@@ -8,9 +8,8 @@ const API = 'http://localhost:8080/api/0/';
 appController(new WeekService(API), document.body, document.querySelector('template')!);
 
 function appController(weekService: WeekService, root: HTMLElement, template: HTMLTemplateElement) {
-  //const clone = template.content.cloneNode(true);
 
-  //root.appendChild(clone);
+  const tasksList = root.querySelector('main')!;
 
   weekService.fetch().then((week: Week) => {
     render(week);
@@ -18,13 +17,21 @@ function appController(weekService: WeekService, root: HTMLElement, template: HT
 
 
   function render(week: Week) {
-    const ul = document.createElement('ul');
-    root.appendChild(ul);
+
+    const weekNumber = root.querySelector('h2')!;
+    weekNumber.innerText = `Week ${week.number}`;
 
     week.tasks.forEach(task => {
-      const li = document.createElement('li');
-      li.textContent = task.description;
-      ul.appendChild(li);
-    });
+      const t = template.content.cloneNode(true).firstChild as HTMLElement;
+
+      t.querySelector('p')!.innerText = task.description;
+      t.querySelector('input')!.checked = task.doneAt !== null;
+      t.querySelector<HTMLElement>('span.priority')!.innerText = task.priority.toString();
+      if (task.dueDate) {
+        t.querySelector<HTMLElement>('span.due')!.innerText = task.dueDate;
+      }
+      tasksList.appendChild(t);
+
+     });
   }
 }
