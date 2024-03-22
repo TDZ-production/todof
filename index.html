@@ -7,7 +7,26 @@
     <title>todof</title>
   </head>
   <body>
-    <div id="app"></div>
+    
+    <div id="app">
+      <header></header>
+      <main></main>
+      <footer></footer>
+    </div>
+    
+    <template>
+      <article>
+        <b class="priority"></b>
+        <p class="desc"></p>
+        <i class="duedate"></i>
+        <form>
+          <input type="hidden" name="id">
+          <input type="checkbox">
+          <button>x</button>
+        </form>
+      </article>
+    </template>
+
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>
