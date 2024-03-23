@@ -92,9 +92,17 @@ export class AppController {
             }
 
             t.querySelector('input')!.addEventListener('change', async (event) => {
-                const checked = (event.target as HTMLInputElement).checked;
+                const element = event.target as HTMLInputElement
 
-                await this.weekService.setTaskDone(task, checked);
+                element.disabled = true;
+
+                const result = await this.weekService.setTaskDone(task, element.checked);
+
+                if (!result) {
+                    element.checked = !element.checked;
+                }
+
+                element.disabled = false;
             });
 
             this.tasksList.appendChild(t);

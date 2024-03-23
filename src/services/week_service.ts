@@ -6,19 +6,30 @@ export class WeekService {
 
     }
 
-    async setTaskDone(task: Task, done: boolean): Promise<void> {
+    async setTaskDone(task: Task, done: boolean): Promise<boolean> {
 
-        const response = await fetch(`${this.API}${task.id}/done`, {
+        const result = await fetch(`${this.API}${task.id}/done`, {
             method: 'PATCH',
             credentials: 'include',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({ done })
-        });
+        })
+            .then((response) => {
+                if (!response.ok) {
+                    console.error('Failed to update task', response);
+                    throw new Error('Failed to update task');
+                }
+                return true;
+            })
+            .catch((error) => {
+                console.error('Failed to update task', error);
+                return false;
+            });
 
-        if (!response.ok) {
-            throw new Error('Failed to update task');
+        if (!result) {
+            return false;
         }
 
         if (done) {
@@ -26,6 +37,8 @@ export class WeekService {
         } else {
             task.doneAt = null;
         }
+
+        return true;
     }
 
     async createTask(data: FormData): Promise<Task> {
