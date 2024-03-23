@@ -5,9 +5,11 @@ import { WeekService } from "./services/week_service";
 export class AppController {
     private week: Promise<Week>;
     private tasksList: HTMLElement;
+    private footer: HTMLElement;
 
     constructor(private weekService: WeekService, private root: HTMLElement, private template: HTMLTemplateElement) {
         this.tasksList = this.root.querySelector('main')!;
+        this.footer = this.root.querySelector('footer')!;
 
         this.week = this.weekService.fetch()
             .catch((error) => {
@@ -34,6 +36,11 @@ export class AppController {
 
         const form = this.root.querySelector<HTMLFormElement>('footer form')!;
         form.addEventListener('submit', async (event) => this.submitTask(week, form, event));
+
+        const description = form.querySelector<HTMLInputElement>('input[name="description"]')!;
+        description.addEventListener('input', () => {
+            this.footer.classList.toggle('valid', description.checkValidity());
+        });
 
         const priority = this.root.querySelector<HTMLInputElement>('footer input[name="priority"]')!;
         const priorities = this.root.querySelectorAll<HTMLInputElement>('.priorities button');
@@ -65,6 +72,7 @@ export class AppController {
         const task = await this.weekService.createTask(new FormData(form));
 
         form.querySelector<HTMLInputElement>('input[name="description"]')!.value = '';
+        this.footer.classList.remove('valid');
 
         week.tasks.unshift(task);
 

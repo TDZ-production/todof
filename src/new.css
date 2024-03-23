@@ -245,6 +245,21 @@ button {
     color: inherit;
 }
 
+footer .ctrls {
+    display: flex;
+    transform: translateX(0);
+    transition: transform 0.48s cubic-bezier(.17, -0.17, .68, 1.09);
+}
+
+.ctrls>* {
+    flex-shrink: 0;
+    width: 100%;
+}
+
+.valid .ctrls {
+    transform: translateX(-100%);
+}
+
 footer nav {
     display: flex;
     background-color: var(--outline);
