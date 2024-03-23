@@ -37,9 +37,44 @@ export class AppController {
         const form = this.root.querySelector<HTMLFormElement>('footer form')!;
         form.addEventListener('submit', async (event) => this.submitTask(week, form, event));
 
-        const description = form.querySelector<HTMLInputElement>('[name="description"]')!;
+        const description = form.querySelector<HTMLTextAreaElement>('[name="description"]')!;
         description.addEventListener('input', () => {
             this.footer.classList.toggle('valid', description.checkValidity());
+        });
+
+        let enterKeyCount = 0;
+        let lastEnterIndex = -1;
+
+        description.addEventListener('keydown', (event) => {
+            if (event.key === 'Process') return;
+            if (event.key === 'Enter') {
+                const currentEnterIndex = description.selectionStart;
+                if (lastEnterIndex === -1 || currentEnterIndex === lastEnterIndex + 1) {
+                    enterKeyCount++;
+                    lastEnterIndex = currentEnterIndex;
+                } else {
+                    enterKeyCount = 1;
+                    lastEnterIndex = currentEnterIndex;
+                }
+
+                if (enterKeyCount === 3) {
+                    event.preventDefault();
+                    description.value = description.value.substring(0, lastEnterIndex - 2) + description.value.substring(lastEnterIndex);
+                    this.submitTask(week, form, { preventDefault: () => { } } as SubmitEvent);
+                    enterKeyCount = 0;
+                    lastEnterIndex = -1;
+                }
+            } else {
+                enterKeyCount = 0;
+                lastEnterIndex = -1;
+            }
+        });
+
+
+        // autosize the textarea so it doesn't scroll
+        description.addEventListener('input', () => {
+            description.style.height = 'auto';
+            description.style.height = `${description.scrollHeight}px`;
         });
 
         const priority = this.root.querySelector<HTMLInputElement>('footer [name="priority"]')!;
@@ -71,8 +106,9 @@ export class AppController {
 
         const task = await this.weekService.createTask(new FormData(form));
 
-        form.querySelector<HTMLInputElement>('input[name="description"]')!.value = '';
-        this.footer.classList.remove('valid');
+        const description = form.querySelector<HTMLInputElement | HTMLTextAreaElement>('[name="description"]')!;
+        description.value = '';
+        description.dispatchEvent(new Event('input'));
 
         week.tasks.unshift(task);
 
