@@ -60,6 +60,10 @@ export class AppController {
     private async filter(week: Week, what?: string) {
         let tasks = [...week.tasks];
 
+        if (what !== 'all' && what !== undefined) {
+            tasks = tasks.filter(task => task.doneAt === null);
+        }
+
         if (what === 'priority') {
             tasks = tasks.sort((b, a) => (a.priority - b.priority) * 10e6 + (a.id - b.id));
         } else if (what === 'due') {
@@ -83,8 +87,15 @@ export class AppController {
             t.querySelector('input')!.checked = task.doneAt !== null;
             t.querySelector<HTMLElement>('span.priority')!.classList.add(`prio${task.priority}`);
             if (task.dueDate) {
-                t.querySelector<HTMLElement>('span.due')!.innerText = task.dueDate.toString();//.getDay().toString();
+                // set it to the day of the week, in short form
+                t.querySelector<HTMLElement>('span.due')!.innerText = task.dueDate.toLocaleDateString('en', { weekday: 'short' });
             }
+
+            t.querySelector('input')!.addEventListener('change', async (event) => {
+                const checked = (event.target as HTMLInputElement).checked;
+
+                await this.weekService.setTaskDone(task, checked);
+            });
 
             this.tasksList.appendChild(t);
         });

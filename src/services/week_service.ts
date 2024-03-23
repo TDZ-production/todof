@@ -6,6 +6,28 @@ export class WeekService {
 
     }
 
+    async setTaskDone(task: Task, done: boolean): Promise<void> {
+
+        const response = await fetch(`${this.API}${task.id}/done`, {
+            method: 'PATCH',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ done })
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to update task');
+        }
+
+        if (done) {
+            task.doneAt = new Date();
+        } else {
+            task.doneAt = null;
+        }
+    }
+
     async createTask(data: FormData): Promise<Task> {
         ['description', 'priority'].forEach((name) => {
             if (data.get(name) === null) {
@@ -33,7 +55,13 @@ export class WeekService {
         const response = await fetch(this.API, {
             credentials: 'include'
         });
-        const data = await response.json();
+        const raw = await response.text();
+        const data = JSON.parse(raw, (key, value) => {
+            if (value !== null && (key === 'createdAt' || key === 'dueDate' || key === 'doneAt')) {
+                return new Date(value);
+            }
+            return value;
+        });
         return data;
     }
 
