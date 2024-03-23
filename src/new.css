@@ -245,8 +245,7 @@ button {
     color: inherit;
 }
 
-.filters {
-    background: var(--filter-background-color);
+footer nav {
     display: flex;
     background-color: var(--outline);
     gap: 2px;
@@ -254,7 +253,15 @@ button {
     box-shadow: 0 0 0 2.5px var(--main-color);
 }
 
-.filters>* {
+footer .priorities {
+    box-shadow: 0 0 0 2.5px var(--prio2-color);
+}
+
+footer .priorities>* {
+    background-color: var(--prio2-color);
+}
+
+footer nav>* {
     flex-grow: 1;
     flex-basis: 80px;
     border: none;
@@ -263,11 +270,11 @@ button {
     color: var(--light-font-color);
 }
 
-.filters .active {
+footer nav .active {
     color: var(--font-color)
 }
 
-.filters>*:hover {
+footer nav>*:hover {
     opacity: 0.96;
 }
 
