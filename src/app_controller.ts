@@ -67,7 +67,7 @@ export class AppController {
         }
 
         if (what === 'priority') {
-            tasks = tasks.filter(task => task.priority > 1).sort((b, a) => (a.priority - b.priority) * 10e6 + (a.id - b.id));
+            tasks = tasks.filter(task => task.priority > 1).sort((b, a) => (a.priority - b.priority) * 10e6 + (b.id - a.id));
         } else if (what === 'due') {
             tasks = tasks.filter(task => task.dueDate !== null).sort((a, b) => a.dueDate!.getTime() - b.dueDate!.getTime());
         } else if (what === 'notes') {
