@@ -35,10 +35,12 @@ export class AppController {
         const form = this.root.querySelector<HTMLFormElement>('footer form')!;
         form.addEventListener('submit', async (event) => this.submitTask(week, form, event));
 
-
-        this.root.querySelectorAll<HTMLElement>('.filters button').forEach((button) => {
+        const filters = this.root.querySelectorAll<HTMLElement>('.filters button');
+        filters.forEach((button) => {
             button.addEventListener('click', () => {
+                filters.forEach((b) => b.classList.remove('active'));
                 this.filter(week, button.dataset.filter);
+                button.classList.add('active');
             });
         });
     }
