@@ -48,10 +48,7 @@ export class AppController {
     private async submitTask(week: Week, form: HTMLFormElement, event: SubmitEvent) {
         event.preventDefault();
 
-        const data = new FormData(form);
-
-        const task = await this.weekService.createTask(data);
-
+        const task = await this.weekService.createTask(new FormData(form));
 
         form.querySelector<HTMLInputElement>('input[name="description"]')!.value = '';
 
