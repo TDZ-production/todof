@@ -1,10 +1,6 @@
 import { Week } from '../models/week';
 
-export interface IWeekService {
-    fetch(): Promise<Week>;
-}
-
-export class WeekService implements IWeekService {
+export class WeekService {
     constructor(private API: string) {
 
     }
@@ -16,5 +12,5 @@ export class WeekService implements IWeekService {
         const data = await response.json();
         return data;
     }
-    
+
 }
