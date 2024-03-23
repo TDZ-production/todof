@@ -43,6 +43,8 @@ export class AppController {
                 button.classList.add('active');
 
                 priority.value = button.dataset.priority!;
+
+                this.submitTask(week, form, { preventDefault: () => { } } as SubmitEvent);
             });
         });
 
