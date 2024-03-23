@@ -59,6 +59,11 @@ export class WeekService {
             body: JSON.stringify(task)
         });
 
+        if (!response.ok) {
+            console.error('Failed to create task', response);
+            throw new Error('Failed to create task');
+        }
+
         const id = await response.json();
 
         return { id, ...task, doneAt: null, createdAt: new Date() };

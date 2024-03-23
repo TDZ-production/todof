@@ -93,19 +93,25 @@ export class AppController {
                 t.querySelector<HTMLElement>('span.due')!.innerText = task.dueDate.toLocaleDateString('en', { weekday: 'short' });
             }
 
-            t.querySelector('input')!.addEventListener('change', async (event) => {
-                const element = event.target as HTMLInputElement
+            const isDoneInput = t.querySelector('input')!;
 
-                element.disabled = true;
+            if (task.priority > 1) {
+                isDoneInput.addEventListener('change', async (event) => {
+                    const element = event.target as HTMLInputElement
 
-                const result = await this.weekService.setTaskDone(task, element.checked);
+                    element.disabled = true;
 
-                if (!result) {
-                    element.checked = !element.checked;
-                }
+                    const result = await this.weekService.setTaskDone(task, element.checked);
 
-                element.disabled = false;
-            });
+                    if (!result) {
+                        element.checked = !element.checked;
+                    }
+
+                    element.disabled = false;
+                });
+            } else {
+                isDoneInput.remove();
+            }
 
             this.tasksList.appendChild(t);
         });
