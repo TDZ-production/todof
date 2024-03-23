@@ -1,57 +1,65 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>todof</title>
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport"
-          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 </head>
+
 <body>
-<section class="app home">
-    <header>
-        <button class="menu">
-            =
-        </button>
-            
-        <h2 class="week_number"></h2>
-        <div class="week-progressbar"></div>
-    </header>
+    <section class="app home">
+        <header>
+            <button class="menu">
+                =
+            </button>
 
-    <main>
+            <h2 class="week_number"></h2>
+            <div class="week-progressbar"></div>
+        </header>
 
-        <template><div class="task">
-                <span class="priority"></span>
-                <p class="desc"></p>
-                <span class="due"></span>
+        <main>
 
-                <input type="checkbox" name="done" />
-                <!-- <aside>
+            <template>
+                <div class="task">
+                    <span class="priority"></span>
+                    <p class="desc"></p>
+                    <span class="due"></span>
+
+                    <input type="checkbox" name="done" />
+                    <!-- <aside>
                     <button class="delete">
                         X
                     </button>
                 </aside> -->
+                </div>
+
+
+                </div>
+            </template>
+
+        </main>
+
+        <footer>
+            <div class="filters">
+                <button data-filter="all">all</button>
+                <button data-filter="priority">priority</button>
+                <button data-filter="due">due</button>
+                <button data-filter="notes">notes</button>
             </div>
+            <form method="post" th:action="@{/tasks/add}">
+                <button type="submit" name="priority" value="4" class="hidden"></button>
 
-            
-        </div></template>
-        
-    </main>
-
-    <footer>
-        <div class="filters">
-            filters
-        </div>
-        <form method="post" th:action="@{/tasks/add}">
-            <button type="submit" name="priority" value="4" class="hidden"></button>
-
-            <div class="addTask">
-                <input type="text" placeholder="What's good, fam?" name="description" id="add" required autofocus
-                       autocomplete="off">
-            </div>
-        </form>
-    </footer>
-</section>
-<script type="module" src="/src/main.ts"></script>
+                <div class="addTask">
+                    <input type="text" placeholder="What's good, fam?" name="description" id="add" required autofocus
+                        autocomplete="off">
+                </div>
+            </form>
+        </footer>
+    </section>
+    <script type="module" src="/src/main.ts"></script>
 </body>
+
 </html>
