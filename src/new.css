@@ -247,7 +247,8 @@ button {
 
 footer .ctrls {
     display: flex;
-    transform: translateX(0);
+    flex-direction: row-reverse;
+    transform: translateX(100%);
     transition: transform 0.48s cubic-bezier(.17, -0.17, .68, 1.09);
 }
 
@@ -257,7 +258,7 @@ footer .ctrls {
 }
 
 .valid .ctrls {
-    transform: translateX(-100%);
+    transform: translateX(0);
 }
 
 footer nav {
