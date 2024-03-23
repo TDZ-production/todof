@@ -111,6 +111,7 @@ export class AppController {
                 });
             } else {
                 isDoneInput.remove();
+                t.querySelector('.due')!.remove();
             }
 
             this.tasksList.appendChild(t);

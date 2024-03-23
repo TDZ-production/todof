@@ -414,6 +414,7 @@ main>form button {
     flex-grow: 1;
     text-align: left;
     padding: 1rem .5rem;
+    padding-right: 1rem;
     line-height: 1.6;
 }
 
@@ -446,17 +447,16 @@ main>form button {
     white-space: nowrap;
     color: var(--light-font-color);
     align-self: center;
-    padding: 1rem .5rem;
-    padding-right: .3rem;
-}
-
-.due {
-    margin-right: 0;
+    margin-right: .5rem;
 }
 
 .task button,
 .task img {
     display: block;
+}
+
+.task input {
+    margin-right: 1rem;
 }
 
 .task button {
