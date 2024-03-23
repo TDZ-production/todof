@@ -26,7 +26,7 @@ function appController(weekService: WeekService, root: HTMLElement, template: HT
 
       t.querySelector('p')!.innerText = task.description;
       t.querySelector('input')!.checked = task.doneAt !== null;
-      t.querySelector<HTMLElement>('span.priority')!.innerText = task.priority.toString();
+      t.querySelector<HTMLElement>('span.priority')!.classList.add(`prio${task.priority}`);
       if (task.dueDate) {
         t.querySelector<HTMLElement>('span.due')!.innerText = task.dueDate;
       }
