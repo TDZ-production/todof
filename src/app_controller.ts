@@ -35,12 +35,24 @@ export class AppController {
         const form = this.root.querySelector<HTMLFormElement>('footer form')!;
         form.addEventListener('submit', async (event) => this.submitTask(week, form, event));
 
+        const priority = this.root.querySelector<HTMLInputElement>('footer input[name="priority"]')!;
+        const priorities = this.root.querySelectorAll<HTMLInputElement>('.priorities button');
+        priorities.forEach((button) => {
+            button.addEventListener('click', () => {
+                priorities.forEach((b) => b.classList.remove('active'));
+                button.classList.add('active');
+
+                priority.value = button.dataset.priority!;
+            });
+        });
+
         const filters = this.root.querySelectorAll<HTMLElement>('.filters button');
         filters.forEach((button) => {
             button.addEventListener('click', () => {
                 filters.forEach((b) => b.classList.remove('active'));
-                this.filter(week, button.dataset.filter);
                 button.classList.add('active');
+
+                this.filter(week, button.dataset.filter);
             });
         });
     }
