@@ -37,16 +37,16 @@ export class AppController {
         const form = this.root.querySelector<HTMLFormElement>('footer form')!;
         form.addEventListener('submit', async (event) => this.submitTask(week, form, event));
 
-        const description = form.querySelector<HTMLInputElement>('input[name="description"]')!;
+        const description = form.querySelector<HTMLInputElement>('[name="description"]')!;
         description.addEventListener('input', () => {
             this.footer.classList.toggle('valid', description.checkValidity());
         });
 
-        const priority = this.root.querySelector<HTMLInputElement>('footer input[name="priority"]')!;
+        const priority = this.root.querySelector<HTMLInputElement>('footer [name="priority"]')!;
         const priorities = this.root.querySelectorAll<HTMLInputElement>('.priorities button');
         priorities.forEach((button) => {
             button.addEventListener('click', () => {
-                priorities.forEach((b) => b.classList.remove('active'));
+                priorities.forEach(b => b.classList.remove('active'));
                 button.classList.add('active');
 
                 priority.value = button.dataset.priority!;

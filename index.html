@@ -5,6 +5,9 @@
     <meta charset="UTF-8">
     <title>todof</title>
     <!-- <link rel="icon" type="image/svg+xml" href="/vite.svg" /> -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <link rel="manifest" href="/manifest.json">
     <meta name="viewport"
         content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 </head>
@@ -58,8 +61,8 @@
             <form>
                 <input type="hidden" name="priority" value="4" />
 
-                <input type="text" maxlength="255" placeholder="What's good, fam?" name="description" required autofocus
-                    autocomplete="off">
+                <textarea type="text" maxlength="255" placeholder="What's good, fam?" name="description" required
+                    autofocus autocomplete="off"></textarea>
 
             </form>
         </footer>

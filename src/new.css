@@ -568,15 +568,17 @@ footer label {
     padding: .5rem;
 }
 
-footer input+svg {
-    margin-left: 0.5rem;
-}
-
-footer input {
+footer input,
+footer textarea {
+    width: 100%;
     padding: 1rem 1rem 2rem 1rem;
     border: none;
     outline: none;
     background: transparent;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    color: var(--font-color);
 }
 
 .stars button {

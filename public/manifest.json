@@ -1,0 +1,10 @@
+{
+    "display": "standalone",
+    "start_url": "/",
+    "background_color": "#fff0c1",
+    "theme_color": "#fff0c1",
+    "name": "todof*",
+    "short_name": "todof*",
+    "description": "do your task or else!",
+    "orientation": "portrait"
+}
