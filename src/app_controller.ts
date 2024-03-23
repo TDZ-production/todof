@@ -16,25 +16,6 @@ export class AppController {
             });
     }
 
-    render(tasks: Task[]) {
-        this.tasksList.innerHTML = '';
-
-        tasks.forEach(task => {
-            const df = this.template.content.cloneNode(true) as DocumentFragment;
-            const t = df.querySelector('.task')!;
-
-            t.querySelector('p')!.innerText = task.description;
-            t.querySelector('input')!.checked = task.doneAt !== null;
-            t.querySelector<HTMLElement>('span.priority')!.classList.add(`prio${task.priority}`);
-            if (task.dueDate) {
-                t.querySelector<HTMLElement>('span.due')!.innerText = task.dueDate;
-            }
-
-            this.tasksList.appendChild(t);
-        });
-
-    }
-
 
     async index() {
         const week = await this.week;
@@ -50,25 +31,62 @@ export class AppController {
 
         this.render(week.tasks.reverse());
 
+
+        const form = this.root.querySelector<HTMLFormElement>('footer form')!;
+        form.addEventListener('submit', async (event) => this.submitTask(week, form, event));
+
+
         this.root.querySelectorAll<HTMLElement>('.filters button').forEach((button) => {
             button.addEventListener('click', () => {
-                this.filter(button.dataset.filter);
+                this.filter(week, button.dataset.filter);
             });
         });
     }
 
-    async filter(what?: string) {
-        const week = await this.week;
+    private async submitTask(week: Week, form: HTMLFormElement, event: SubmitEvent) {
+        event.preventDefault();
+
+        const data = new FormData(form);
+
+        const task = await this.weekService.createTask(data);
+
+
+        form.querySelector<HTMLInputElement>('input[name="description"]')!.value = '';
+
+        this.render([task, ...week.tasks]);
+    }
+
+
+    private async filter(week: Week, what?: string) {
         let tasks = [...week.tasks];
 
         if (what === 'priority') {
             tasks = tasks.sort((b, a) => (a.priority - b.priority) * 10e6 + (a.id - b.id));
         } else if (what === 'due') {
-            tasks = tasks.filter(task => task.dueDate !== null).sort((a, b) => a.dueDate!.localeCompare(b.dueDate!));
+            tasks = tasks.filter(task => task.dueDate !== null).sort((a, b) => a.dueDate!.getTime() - b.dueDate!.getTime());
         } else if (what === 'notes') {
             tasks = tasks.filter(task => task.priority === 1);
         }
 
         this.render(tasks);
+    }
+
+
+    private render(tasks: Task[]) {
+        this.tasksList.innerHTML = '';
+
+        tasks.forEach(task => {
+            const df = this.template.content.cloneNode(true) as DocumentFragment;
+            const t = df.querySelector('.task')!;
+
+            t.querySelector('p')!.innerText = task.description;
+            t.querySelector('input')!.checked = task.doneAt !== null;
+            t.querySelector<HTMLElement>('span.priority')!.classList.add(`prio${task.priority}`);
+            if (task.dueDate) {
+                t.querySelector<HTMLElement>('span.due')!.innerText = task.dueDate.toString();//.getDay().toString();
+            }
+
+            this.tasksList.appendChild(t);
+        });
     }
 }
