@@ -90,13 +90,22 @@ export class AppController {
             });
         });
 
+        let currentFilter = this.root.querySelector<HTMLInputElement>('.filters button.active')?.dataset.filter || 'all';
         const filters = this.root.querySelectorAll<HTMLElement>('.filters button');
-        filters.forEach((button) => {
+        filters.forEach(button => {
             button.addEventListener('click', () => {
-                filters.forEach((b) => b.classList.remove('active'));
+                let filter = button.dataset.filter!;
+                filters.forEach(b => b.classList.remove('active'));
                 button.classList.add('active');
 
-                this.filter(week, button.dataset.filter);
+                if (filter === 'all' && filter === currentFilter) {
+                    filter = "not-done";
+                } else if (filter === currentFilter) {
+                    return;
+                }
+
+                currentFilter = filter;
+                this.filter(week, filter);
             });
         });
     }
