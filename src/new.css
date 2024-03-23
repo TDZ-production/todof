@@ -245,12 +245,6 @@ button {
     color: inherit;
 }
 
-#filter-text {
-    width: 50%;
-    margin: auto;
-    text-transform: capitalize;
-}
-
 .filters {
     background: var(--filter-background-color);
     display: flex;
@@ -267,7 +261,6 @@ button {
     background: var(--main-color);
     border-radius: 0;
 }
-
 
 .filters>*:hover {}
 
@@ -389,17 +382,6 @@ main>form button {
 .note {
     opacity: 0.5;
     margin-bottom: 3rem;
-}
-
-.addTask {
-    display: flex;
-    padding: 0.4rem 0.5rem;
-}
-
-#add {
-    border: none;
-    outline: none;
-    background: transparent;
 }
 
 .task,
@@ -562,11 +544,10 @@ footer input+svg {
 }
 
 footer input {
-    padding: .9rem .5rem 1.8rem .5rem;
-}
-
-#plannedFooter {
-    display: none;
+    padding: 1rem 1rem 2rem 1rem;
+    border: none;
+    outline: none;
+    background: transparent;
 }
 
 .stars button {
@@ -741,10 +722,6 @@ button.startWeek:hover {
     margin-top: 3rem;
 }
 
-#form {
-    margin-top: 4rem;
-}
-
 textarea {
     width: 21rem;
     height: 5rem;
@@ -756,25 +733,6 @@ textarea {
 
 textarea:focus {
     color: var(--feedback-text-area-border-color);
-}
-
-#received {
-    padding: .8rem;
-    color: var(--positive-output-color);
-}
-
-#formButton {
-    margin-top: 0;
-    border: 1px solid var(--feedback-submit-color);
-    background: var(--feedback-submit-backgroud-color);
-    color: var(--feedback-submit-color);
-}
-
-#formButton:hover {
-    background-color: var(--button-hover-backgroud-color);
-    border: var(--button-hover-border-color);
-    color: var(--button-hover-border-color);
-    ;
 }
 
 .discordFeedback {
@@ -850,10 +808,6 @@ input.toDelegate:checked+span.weekIcon+span.weekIcon {
     padding: .4rem;
 }
 
-#logout {
-    cursor: pointer;
-}
-
 .NoTaskPlaceholder,
 .plannedPlaceholder {
     margin: 4.5rem 2rem;
@@ -874,13 +828,6 @@ input.toDelegate:checked+span.weekIcon+span.weekIcon {
     position: relative;
 }
 
-#showPassword {
-    position: absolute;
-    right: 1rem;
-    top: 50%;
-    transform: translateY(-50%);
-}
-
 .fadeoutMessage {
     margin-inline: auto;
     left: 0;
@@ -895,13 +842,6 @@ input.toDelegate:checked+span.weekIcon+span.weekIcon {
     color: var(--positive-output-color);
     border: 1px solid var(--positive-output-color);
     background-color: var(--positive-output-background-color);
-}
-
-#leftBehind,
-#redFeedback {
-    color: var(--negative-output-color);
-    border: 1px solid var(--negative-output-color);
-    background-color: var(--negative-output-background-color);
 }
 
 .fadeoutMessage.fade-out {
@@ -960,16 +900,6 @@ html.dark .light_on {
 
 html:not(.dark) .light_off {
     display: none;
-}
-
-.login #toggleTheme {
-    margin-top: 1rem;
-}
-
-#toggleTheme {
-    border: none;
-    background: none;
-    padding: 0;
 }
 
 .date-input {
