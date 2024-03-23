@@ -55,7 +55,9 @@ export class AppController {
 
         form.querySelector<HTMLInputElement>('input[name="description"]')!.value = '';
 
-        this.render([task, ...week.tasks]);
+        week.tasks.unshift(task);
+
+        this.render(week.tasks);
     }
 
 
