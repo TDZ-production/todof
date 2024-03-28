@@ -7,9 +7,11 @@ export class AppController {
     private tasksList: HTMLElement;
     private footer: HTMLElement;
     private form: HTMLFormElement;
+    private menuButton: HTMLElement;
     private submitAction: () => Promise<void>;
 
     constructor(private weekService: WeekService, private root: HTMLElement, private template: HTMLTemplateElement) {
+        this.menuButton = this.root.querySelector('.menu')!;
         this.tasksList = this.root.querySelector('main')!;
         this.footer = this.root.querySelector('footer')!;
         this.form = this.root.querySelector('footer form')!;
@@ -20,6 +22,11 @@ export class AppController {
                 console.error(error);
                 throw new Error('Failed to fetch data');
             });
+
+
+        this.menuButton.onclick = () => {
+            window.location.reload();
+        };
     }
 
 
@@ -33,6 +40,26 @@ export class AppController {
             return;
         }
         weekNumber.innerText = `Week ${week.number}`;
+
+        // on swipe up, focus the description field
+        this.tasksList.addEventListener('touchstart', (event) => {
+            const touch = event.touches[0];
+            let startY = touch.clientY;
+
+            // if taskList is not scrolled to the top, bail out
+            if (this.tasksList.scrollTop !== 0) {
+                return;
+            }
+
+            this.tasksList.addEventListener('touchend', (event) => {
+                const touch = event.changedTouches[0];
+                let endY = touch.clientY;
+
+                if (startY - endY > 100) {
+                    description.focus();
+                }
+            }, { once: true });
+        });
 
 
         this.rerender();
