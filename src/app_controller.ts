@@ -261,8 +261,15 @@ export class AppController {
             t.querySelector('input')!.checked = task.doneAt !== null;
             t.querySelector<HTMLElement>('span.priority')!.classList.add(`prio${task.priority}`);
             if (task.dueDate) {
-                // set it to the day of the week, in short form
-                t.querySelector<HTMLElement>('span.due')!.innerText = task.dueDate.toLocaleDateString('en', { weekday: 'short' });
+                const due = t.querySelector<HTMLElement>('span.due')!;
+                if (task.dueDate < new Date()) {
+                    t.classList.add('overdue');
+                    due.innerText = `${
+                        Math.floor((new Date().getTime() - task.dueDate.getTime()) / (1000 * 60 * 60 * 24))
+                    } days ago`
+                } else {
+                    due.innerText = task.dueDate.toLocaleDateString('en', { weekday: 'short' });
+                }
             }
 
             p.onclick = () => {
