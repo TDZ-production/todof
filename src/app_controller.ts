@@ -235,7 +235,8 @@ export class AppController {
             this.stashForm();
         }
 
-        this.setDescription(task.description)
+        this.setDescription(task.description);
+        this.desc.focus();
 
         this.setPriority(task.priority.toString());
 
