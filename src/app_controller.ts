@@ -81,12 +81,14 @@ export class AppController {
 
         const priority = this.root.querySelector<HTMLInputElement>('footer [name="priority"]')!;
         const priorities = this.root.querySelectorAll<HTMLInputElement>('.priorities button');
+        priority.onchange = () => {
+            priorities.forEach(b => b.classList.remove('active'));
+            priorities[Number(priority.value) - 1]?.classList.add('active');
+        }
         priorities.forEach((button) => {
             button.addEventListener('click', () => {
-                priorities.forEach(b => b.classList.remove('active'));
-                button.classList.add('active');
-
                 priority.value = button.dataset.priority!;
+                priority.dispatchEvent(new Event("change"));
 
                 this.submitForm();
             });
@@ -167,6 +169,7 @@ export class AppController {
         description.dispatchEvent(new Event('input'));
 
         priority.value = task.priority.toString();
+        priority.dispatchEvent(new Event("change"));
 
         this.submitAction = () => this.putTask(task);
     }
