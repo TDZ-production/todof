@@ -178,11 +178,9 @@ export class AppController {
     }
 
     private render(...tasks: Task[]) {
-        const result: HTMLElement[] = [];
-
         this.tasksList.innerHTML = '';
         
-        tasks.forEach(task => {
+        const result: HTMLElement[] = tasks.map(task => {
             const df = this.template.content.cloneNode(true) as DocumentFragment;
             const t = df.querySelector<HTMLElement>('.task')!;
 
@@ -219,7 +217,7 @@ export class AppController {
                 t.querySelector('.due')!.remove();
             }
 
-            result.push(t);
+            return t;
         });
 
         this.tasksList.append(...result);
