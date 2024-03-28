@@ -168,7 +168,7 @@ export class AppController {
     }
 
     private resetForm() {
-        this.desc.value = '';
+        this.setDescription('');
 
         this.tasksList.classList.remove("fade");
 
