@@ -197,7 +197,9 @@ export class AppController {
             const df = this.template.content.cloneNode(true) as DocumentFragment;
             const t = df.querySelector<HTMLElement>('.task')!;
 
-            t.querySelector('p')!.innerText = task.description;
+            const p = t.querySelector('p')!
+            p.innerText = task.description;
+
             t.querySelector('input')!.checked = task.doneAt !== null;
             t.querySelector<HTMLElement>('span.priority')!.classList.add(`prio${task.priority}`);
             if (task.dueDate) {
@@ -205,7 +207,7 @@ export class AppController {
                 t.querySelector<HTMLElement>('span.due')!.innerText = task.dueDate.toLocaleDateString('en', { weekday: 'short' });
             }
 
-            t.onclick = () => {
+            p.onclick = () => {
                 this.editTask(task);
             }
 
