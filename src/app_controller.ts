@@ -42,7 +42,15 @@ export class AppController {
         const description = this.form.querySelector<HTMLTextAreaElement>('[name="description"]')!;
         description.addEventListener('input', () => {
             this.footer.classList.toggle('valid', description.checkValidity());
+            fitDescriptionArea()
         });
+
+        fitDescriptionArea();
+
+        function fitDescriptionArea() {
+            description.style.height = 'auto';
+            description.style.height = `${description.scrollHeight}px`;
+        }
 
         let enterKeyCount = 0;
         let lastEnterIndex = -1;
@@ -70,13 +78,6 @@ export class AppController {
                 enterKeyCount = 0;
                 lastEnterIndex = -1;
             }
-        });
-
-
-        // autosize the textarea so it doesn't scroll
-        description.addEventListener('input', () => {
-            description.style.height = 'auto';
-            description.style.height = `${description.scrollHeight}px`;
         });
 
         const priority = this.root.querySelector<HTMLInputElement>('footer [name="priority"]')!;
@@ -134,6 +135,8 @@ export class AppController {
         const description = this.form.querySelector<HTMLInputElement | HTMLTextAreaElement>('[name="description"]')!;
         description.value = '';
         description.dispatchEvent(new Event('input'));
+
+        this.submitAction = this.createTask;
     }
 
     private async putTask(task: Task) {
@@ -162,6 +165,13 @@ export class AppController {
     }
 
     private async editTask(task: Task) {
+        if (this.submitAction != this.createTask) {
+            this.tasksList.classList.remove("fade");
+            return this.resetForm();
+        }
+
+        this.tasksList.classList.add("fade");
+
         const description = this.form.querySelector<HTMLInputElement | HTMLTextAreaElement>('[name="description"]')!;
         const priority = this.root.querySelector<HTMLInputElement>('footer [name="priority"]')!;
 
@@ -182,7 +192,7 @@ export class AppController {
 
     private render(...tasks: Task[]) {
         this.tasksList.innerHTML = '';
-        
+
         const result: HTMLElement[] = tasks.map(task => {
             const df = this.template.content.cloneNode(true) as DocumentFragment;
             const t = df.querySelector<HTMLElement>('.task')!;
