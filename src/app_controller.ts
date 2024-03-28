@@ -6,10 +6,14 @@ export class AppController {
     private week: Promise<Week>;
     private tasksList: HTMLElement;
     private footer: HTMLElement;
+    private form: HTMLFormElement;
+    private submitAction: () => Promise<void>;
 
     constructor(private weekService: WeekService, private root: HTMLElement, private template: HTMLTemplateElement) {
         this.tasksList = this.root.querySelector('main')!;
         this.footer = this.root.querySelector('footer')!;
+        this.form = this.root.querySelector('footer form')!;
+        this.submitAction = this.createTask;
 
         this.week = this.weekService.fetch()
             .catch((error) => {
@@ -31,16 +35,22 @@ export class AppController {
         weekNumber.innerText = `Week ${week.number}`;
 
 
-        this.render(week.tasks.reverse());
+        this.rerender();
 
+        this.form.onsubmit = this.submitForm;
 
-        const form = this.root.querySelector<HTMLFormElement>('footer form')!;
-        form.addEventListener('submit', async (event) => this.submitTask(week, form, event));
-
-        const description = form.querySelector<HTMLTextAreaElement>('[name="description"]')!;
+        const description = this.form.querySelector<HTMLTextAreaElement>('[name="description"]')!;
         description.addEventListener('input', () => {
             this.footer.classList.toggle('valid', description.checkValidity());
+            fitDescriptionArea()
         });
+
+        fitDescriptionArea();
+
+        function fitDescriptionArea() {
+            description.style.height = 'auto';
+            description.style.height = `${description.scrollHeight}px`;
+        }
 
         let enterKeyCount = 0;
         let lastEnterIndex = -1;
@@ -60,7 +70,7 @@ export class AppController {
                 if (enterKeyCount === 3) {
                     event.preventDefault();
                     description.value = description.value.substring(0, lastEnterIndex - 2) + description.value.substring(lastEnterIndex);
-                    this.submitTask(week, form, { preventDefault: () => { } } as SubmitEvent);
+                    this.submitForm();
                     enterKeyCount = 0;
                     lastEnterIndex = -1;
                 }
@@ -70,23 +80,18 @@ export class AppController {
             }
         });
 
-
-        // autosize the textarea so it doesn't scroll
-        description.addEventListener('input', () => {
-            description.style.height = 'auto';
-            description.style.height = `${description.scrollHeight}px`;
-        });
-
         const priority = this.root.querySelector<HTMLInputElement>('footer [name="priority"]')!;
         const priorities = this.root.querySelectorAll<HTMLInputElement>('.priorities button');
+        priority.onchange = () => {
+            priorities.forEach(b => b.classList.remove('active'));
+            priorities[Number(priority.value) - 1]?.classList.add('active');
+        }
         priorities.forEach((button) => {
             button.addEventListener('click', () => {
-                priorities.forEach(b => b.classList.remove('active'));
-                button.classList.add('active');
-
                 priority.value = button.dataset.priority!;
+                priority.dispatchEvent(new Event("change"));
 
-                this.submitTask(week, form, { preventDefault: () => { } } as SubmitEvent);
+                this.submitForm();
             });
         });
 
@@ -110,18 +115,34 @@ export class AppController {
         });
     }
 
-    private async submitTask(week: Week, form: HTMLFormElement, event: SubmitEvent) {
-        event.preventDefault();
+    private async createTask() {
+        const task = await this.weekService.createTask(new FormData(this.form));
 
-        const task = await this.weekService.createTask(new FormData(form));
+        (await this.week).tasks.unshift(task);
 
-        const description = form.querySelector<HTMLInputElement | HTMLTextAreaElement>('[name="description"]')!;
+        this.rerender();
+    }
+
+    private submitForm(event?: Event) {
+        if (event) event.preventDefault();
+
+        this.submitAction();
+
+        this.resetForm();
+    }
+
+    private resetForm() {
+        const description = this.form.querySelector<HTMLInputElement | HTMLTextAreaElement>('[name="description"]')!;
         description.value = '';
         description.dispatchEvent(new Event('input'));
 
-        week.tasks.unshift(task);
+        this.submitAction = this.createTask;
+    }
 
-        this.render(week.tasks);
+    private async putTask(task: Task) {
+        this.weekService.putTask(task, new FormData(this.form));
+
+        return this.rerender();
     }
 
 
@@ -140,16 +161,41 @@ export class AppController {
             tasks = tasks.filter(task => task.priority === 1);
         }
 
-        this.render(tasks);
+        this.render(...tasks);
     }
 
+    private async editTask(task: Task) {
+        if (this.submitAction != this.createTask) {
+            this.tasksList.classList.remove("fade");
+            return this.resetForm();
+        }
 
-    private render(tasks: Task[]) {
+        this.tasksList.classList.add("fade");
+
+        const description = this.form.querySelector<HTMLInputElement | HTMLTextAreaElement>('[name="description"]')!;
+        const priority = this.root.querySelector<HTMLInputElement>('footer [name="priority"]')!;
+
+        description.value = task.description;
+        description.dispatchEvent(new Event('input'));
+
+        priority.value = task.priority.toString();
+        priority.dispatchEvent(new Event("change"));
+
+        this.submitAction = () => this.putTask(task);
+    }
+
+    private async rerender() {
+        const week = await this.week;
+
+        this.render(...week.tasks);
+    }
+
+    private render(...tasks: Task[]) {
         this.tasksList.innerHTML = '';
 
-        tasks.forEach(task => {
+        const result: HTMLElement[] = tasks.map(task => {
             const df = this.template.content.cloneNode(true) as DocumentFragment;
-            const t = df.querySelector('.task')!;
+            const t = df.querySelector<HTMLElement>('.task')!;
 
             t.querySelector('p')!.innerText = task.description;
             t.querySelector('input')!.checked = task.doneAt !== null;
@@ -157,6 +203,10 @@ export class AppController {
             if (task.dueDate) {
                 // set it to the day of the week, in short form
                 t.querySelector<HTMLElement>('span.due')!.innerText = task.dueDate.toLocaleDateString('en', { weekday: 'short' });
+            }
+
+            t.onclick = () => {
+                this.editTask(task);
             }
 
             const isDoneInput = t.querySelector('input')!;
@@ -180,7 +230,11 @@ export class AppController {
                 t.querySelector('.due')!.remove();
             }
 
-            this.tasksList.appendChild(t);
+            return t;
         });
+
+        this.tasksList.append(...result);
+
+        return result;
     }
 }

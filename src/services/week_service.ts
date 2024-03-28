@@ -41,12 +41,39 @@ export class WeekService {
         return true;
     }
 
-    async createTask(data: FormData): Promise<Task> {
+    private validate(data: FormData) {
         ['description', 'priority'].forEach((name) => {
             if (data.get(name) === null) {
                 throw new Error(`Missing field: ${name}`);
             }
         });
+    }
+
+    async putTask(task: Task, data: FormData) {
+        this.validate(data);
+
+        task.description = data.get('description')!.toString();
+        task.priority = Number(data.get('priority'));
+
+        const response = await fetch(this.API + task.id, {
+            method: 'PUT',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(task)
+        });
+
+        if (!response.ok) {
+            console.error('Failed to update task', response);
+            throw new Error('Failed to update task');
+        }
+
+        return task;
+    }
+
+    async createTask(data: FormData): Promise<Task> {
+        this.validate(data);
 
         const task = { description: data.get('description')!.toString(), priority: Number(data.get('priority')), dueDate: null }
 
@@ -74,13 +101,14 @@ export class WeekService {
             credentials: 'include'
         });
         const raw = await response.text();
-        const data = JSON.parse(raw, (key, value) => {
+        const week: Week = JSON.parse(raw, (key, value) => {
             if (value !== null && (key === 'createdAt' || key === 'dueDate' || key === 'doneAt')) {
                 return new Date(value);
             }
             return value;
         });
-        return data;
+        week.tasks.reverse()
+        return week;
     }
 
 }
