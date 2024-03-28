@@ -9,6 +9,9 @@ export class AppController {
     private form: HTMLFormElement;
     private menuButton: HTMLElement;
     private submitAction: () => Promise<void>;
+    private stash: [string, string] | null = null;
+    private desc: HTMLTextAreaElement;
+    private priority: HTMLInputElement;
 
     constructor(private weekService: WeekService, private root: HTMLElement, private template: HTMLTemplateElement) {
         this.menuButton = this.root.querySelector('.menu')!;
@@ -16,6 +19,8 @@ export class AppController {
         this.footer = this.root.querySelector('footer')!;
         this.form = this.root.querySelector('footer form')!;
         this.submitAction = this.createTask;
+        this.desc = this.form.querySelector<HTMLTextAreaElement>('[name="description"]')!;
+        this.priority = this.form.querySelector<HTMLInputElement>('[name="priority"]')!;
 
         this.week = this.weekService.fetch()
             .catch((error) => {
@@ -31,8 +36,9 @@ export class AppController {
 
 
     async index() {
-        const week = await this.week;
+        this.popStash();
 
+        const week = await this.week;
 
         const weekNumber = this.root.querySelector('h2')!;
         if (!this.week) {
@@ -56,7 +62,7 @@ export class AppController {
                 let endY = touch.clientY;
 
                 if (startY - endY > 100) {
-                    description.focus();
+                    this.desc.focus();
                 }
             }, { once: true });
         });
@@ -66,26 +72,26 @@ export class AppController {
 
         this.form.onsubmit = this.submitForm;
 
-        const description = this.form.querySelector<HTMLTextAreaElement>('[name="description"]')!;
-        description.addEventListener('input', () => {
-            this.footer.classList.toggle('valid', description.checkValidity());
+        this.desc.addEventListener('input', () => {
+            this.footer.classList.toggle('valid', this.desc.checkValidity());
             fitDescriptionArea()
         });
 
-        fitDescriptionArea();
 
-        function fitDescriptionArea() {
-            description.style.height = 'auto';
-            description.style.height = `${description.scrollHeight}px`;
+
+        const fitDescriptionArea = () => {
+            this.desc.style.height = 'auto';
+            this.desc.style.height = `${this.desc.scrollHeight}px`;
         }
+        fitDescriptionArea();
 
         let enterKeyCount = 0;
         let lastEnterIndex = -1;
 
-        description.addEventListener('keydown', (event) => {
+        this.desc.addEventListener('keydown', (event) => {
             if (event.key === 'Process') return;
             if (event.key === 'Enter') {
-                const currentEnterIndex = description.selectionStart;
+                const currentEnterIndex = this.desc.selectionStart;
                 if (lastEnterIndex === -1 || currentEnterIndex === lastEnterIndex + 1) {
                     enterKeyCount++;
                     lastEnterIndex = currentEnterIndex;
@@ -96,7 +102,7 @@ export class AppController {
 
                 if (enterKeyCount === 3) {
                     event.preventDefault();
-                    description.value = description.value.substring(0, lastEnterIndex - 2) + description.value.substring(lastEnterIndex);
+                    this.desc.value = this.desc.value.substring(0, lastEnterIndex - 2) + this.desc.value.substring(lastEnterIndex);
                     this.submitForm();
                     enterKeyCount = 0;
                     lastEnterIndex = -1;
@@ -107,16 +113,14 @@ export class AppController {
             }
         });
 
-        const priority = this.root.querySelector<HTMLInputElement>('footer [name="priority"]')!;
         const priorities = this.root.querySelectorAll<HTMLInputElement>('.priorities button');
-        priority.onchange = () => {
+        this.priority.onchange = () => {
             priorities.forEach(b => b.classList.remove('active'));
-            priorities[Number(priority.value) - 1]?.classList.add('active');
+            priorities[Number(this.priority.value) - 1]?.classList.add('active');
         }
         priorities.forEach((button) => {
             button.addEventListener('click', () => {
-                priority.value = button.dataset.priority!;
-                priority.dispatchEvent(new Event("change"));
+                this.setPriority(button.dataset.priority!);
 
                 this.submitForm();
             });
@@ -142,6 +146,11 @@ export class AppController {
         });
     }
 
+    private setPriority(value: string) {
+        this.priority.value = value.toString();
+        this.priority.dispatchEvent(new Event("change"));
+    }
+
     private async createTask() {
         const task = await this.weekService.createTask(new FormData(this.form));
 
@@ -159,9 +168,11 @@ export class AppController {
     }
 
     private resetForm() {
-        const description = this.form.querySelector<HTMLInputElement | HTMLTextAreaElement>('[name="description"]')!;
-        description.value = '';
-        description.dispatchEvent(new Event('input'));
+        this.desc.value = '';
+
+        this.tasksList.classList.remove("fade");
+
+        this.popStash();
 
         this.submitAction = this.createTask;
     }
@@ -191,22 +202,42 @@ export class AppController {
         this.render(...tasks);
     }
 
+    private stashForm() {
+        this.stash = [this.priority.value, this.desc.value];
+        localStorage.setItem('stash', JSON.stringify(this.stash));
+    }
+
+    private popStash() {
+        this.stash = JSON.parse(localStorage.getItem('stash') || 'null');
+        if (this.stash) {
+            const [priority, description] = this.stash;
+            this.stash = null;
+            localStorage.removeItem('stash');
+
+            this.setPriority(priority);
+            this.setDescription(description);
+        }
+    }
+
+    private setDescription(description: string) {
+        this.desc.value = description;
+        this.desc.dispatchEvent(new Event('input'));
+    }
+
     private async editTask(task: Task) {
         if (this.submitAction != this.createTask) {
-            this.tasksList.classList.remove("fade");
             return this.resetForm();
         }
 
         this.tasksList.classList.add("fade");
 
-        const description = this.form.querySelector<HTMLInputElement | HTMLTextAreaElement>('[name="description"]')!;
-        const priority = this.root.querySelector<HTMLInputElement>('footer [name="priority"]')!;
+        if (this.desc.value.trim() !== '') {
+            this.stashForm();
+        }
 
-        description.value = task.description;
-        description.dispatchEvent(new Event('input'));
+        this.setDescription(task.description)
 
-        priority.value = task.priority.toString();
-        priority.dispatchEvent(new Event("change"));
+        this.setPriority(task.priority.toString());
 
         this.submitAction = () => this.putTask(task);
     }
