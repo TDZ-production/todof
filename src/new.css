@@ -437,15 +437,15 @@ main>form button {
     display: none;
 }
 
-.task > * {
+.task>* {
     display: inline-flex;
     align-items: center;
 }
 
-.task > main {
+.task>main {
     width: 100%;
     white-space: initial;
-    /* flex-shrink: 0; */
+    min-height: 3.9rem;
 }
 
 .task input {
@@ -518,7 +518,7 @@ main>form button {
 .prio2,
 .prio3,
 .prio4 {
-    width: .45rem;
+    width: .35rem;
     position: absolute;
     left: 0;
     top: .5rem;
@@ -595,7 +595,8 @@ footer label {
 footer input,
 footer textarea {
     width: 100%;
-    padding: 1rem 1rem 2rem 1rem;
+    padding: 1rem;
+    margin-bottom: 2rem;
     border: none;
     outline: none;
     background: transparent;
