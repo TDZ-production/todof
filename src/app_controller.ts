@@ -137,8 +137,6 @@ export class AppController {
 
                 if (filter === 'all' && filter === this.currentFilter) {
                     filter = "not-done";
-                } else if (filter === this.currentFilter) {
-                    return;
                 }
 
                 this.currentFilter = filter;
