@@ -13,6 +13,7 @@ export class AppController {
     private desc: HTMLTextAreaElement;
     private priority: HTMLInputElement;
     private currentFilter: string;
+    private filters: HTMLElement[];
 
     constructor(private weekService: WeekService, private root: HTMLElement, private template: HTMLTemplateElement) {
         this.menuButton = this.root.querySelector('.menu')!;
@@ -23,6 +24,7 @@ export class AppController {
         this.desc = this.form.querySelector<HTMLTextAreaElement>('[name="description"]')!;
         this.priority = this.form.querySelector<HTMLInputElement>('[name="priority"]')!;
         this.currentFilter = this.root.querySelector<HTMLInputElement>('.filters button.active')?.dataset.filter || 'all';
+        this.filters = Array.from(this.root.querySelectorAll('.filters button'));
 
         this.week = this.weekService.fetch()
             .catch((error) => {
@@ -128,21 +130,29 @@ export class AppController {
             });
         });
 
-        const filters = this.root.querySelectorAll<HTMLElement>('.filters button');
-        filters.forEach(button => {
+        this.filters.forEach(button => {
             button.addEventListener('click', () => {
-                let filter = button.dataset.filter!;
-                filters.forEach(b => b.classList.remove('active'));
-                button.classList.add('active');
-
-                if (filter === 'all' && filter === this.currentFilter) {
-                    filter = "not-done";
-                }
-
-                this.currentFilter = filter;
-                this.filter(filter);
+                this.setFilter(button.dataset.filter!);
             });
         });
+    }
+
+    private setFilter(filter: string) {
+        this.filters.forEach(b => b.classList.remove('active'));
+
+        const button = this.filters.find(b => b.dataset.filter === filter);
+        button?.classList.add('active');
+
+        if (filter === this.currentFilter) {
+            if (filter.endsWith('-ext')) {
+                filter = filter.replace('-ext', '');
+            } else {
+                filter = filter + '-ext';
+            }
+        }
+
+        this.currentFilter = filter;
+        this.filter(filter);
     }
 
     private setPriority(value: string) {
@@ -182,19 +192,20 @@ export class AppController {
         return this.rerender();
     }
 
-    private async filter(what?: string) {
+    private async filter(what: string) {
         const week = await this.week;
         let tasks = [...week.tasks];
+        const extended = what.endsWith('-ext');
 
-        if (what !== 'all' && what !== undefined) {
+        if (!extended) {
             tasks = tasks.filter(task => task.doneAt === null);
         }
 
-        if (what === 'priority') {
-            tasks = tasks.filter(task => task.priority > 1).sort((b, a) => (a.priority - b.priority) * 10e6 + (b.id - a.id));
-        } else if (what === 'due') {
+        if (what.startsWith('priority')) {
+            tasks = tasks.filter(task => extended || task.priority > 1).sort((b, a) => (a.priority - b.priority) * 10e6 + (b.id - a.id));
+        } else if (what.startsWith('due')) {
             tasks = tasks.filter(task => task.dueDate !== null).sort((a, b) => a.dueDate!.getTime() - b.dueDate!.getTime());
-        } else if (what === 'notes') {
+        } else if (what.startsWith('notes')) {
             tasks = tasks.filter(task => task.priority === 1);
         }
 
