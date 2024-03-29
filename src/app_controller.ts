@@ -12,6 +12,7 @@ export class AppController {
     private stash: [string, string] | null = null;
     private desc: HTMLTextAreaElement;
     private priority: HTMLInputElement;
+    private currentFilter: string;
 
     constructor(private weekService: WeekService, private root: HTMLElement, private template: HTMLTemplateElement) {
         this.menuButton = this.root.querySelector('.menu')!;
@@ -21,6 +22,7 @@ export class AppController {
         this.submitAction = this.createTask;
         this.desc = this.form.querySelector<HTMLTextAreaElement>('[name="description"]')!;
         this.priority = this.form.querySelector<HTMLInputElement>('[name="priority"]')!;
+        this.currentFilter = this.root.querySelector<HTMLInputElement>('.filters button.active')?.dataset.filter || 'all';
 
         this.week = this.weekService.fetch()
             .catch((error) => {
@@ -126,7 +128,6 @@ export class AppController {
             });
         });
 
-        let currentFilter = this.root.querySelector<HTMLInputElement>('.filters button.active')?.dataset.filter || 'all';
         const filters = this.root.querySelectorAll<HTMLElement>('.filters button');
         filters.forEach(button => {
             button.addEventListener('click', () => {
@@ -134,14 +135,14 @@ export class AppController {
                 filters.forEach(b => b.classList.remove('active'));
                 button.classList.add('active');
 
-                if (filter === 'all' && filter === currentFilter) {
+                if (filter === 'all' && filter === this.currentFilter) {
                     filter = "not-done";
-                } else if (filter === currentFilter) {
+                } else if (filter === this.currentFilter) {
                     return;
                 }
 
-                currentFilter = filter;
-                this.filter(week, filter);
+                this.currentFilter = filter;
+                this.filter(filter);
             });
         });
     }
@@ -184,7 +185,8 @@ export class AppController {
     }
 
 
-    private async filter(week: Week, what?: string) {
+    private async filter(what?: string) {
+        const week = await this.week;
         let tasks = [...week.tasks];
 
         if (what !== 'all' && what !== undefined) {
@@ -261,9 +263,7 @@ export class AppController {
     }
 
     private async rerender() {
-        const week = await this.week;
-
-        this.render(...week.tasks);
+        this.filter(this.currentFilter);
     }
 
     private render(...tasks: Task[]) {
