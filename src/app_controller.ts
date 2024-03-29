@@ -224,6 +224,21 @@ export class AppController {
         this.desc.dispatchEvent(new Event('input'));
     }
 
+    private async deleteTask(task: Task) {
+        const week = await this.week;
+
+        const index = week.tasks.findIndex(t => t === task);
+        if (index === -1) {
+            return;
+        }
+
+        week.tasks.splice(index, 1);
+
+        this.weekService.deleteTask(task);
+
+        this.rerender();
+    }
+
     private async editTask(task: Task) {
         if (this.submitAction != this.createTask) {
             return this.resetForm();
@@ -258,9 +273,19 @@ export class AppController {
 
             const p = t.querySelector('p')!
             p.innerText = task.description;
+            p.onclick = () => {
+                this.editTask(task);
+            }
 
-            t.querySelector('input')!.checked = task.doneAt !== null;
+            const isDoneInput = t.querySelector('input')!;
+            isDoneInput.checked = task.doneAt !== null;
+
+            t.querySelector<HTMLElement>('.delete')!.onclick = () => {
+                this.deleteTask(task);
+            }
+
             t.querySelector<HTMLElement>('span.priority')!.classList.add(`prio${task.priority}`);
+            
             if (task.dueDate) {
                 const due = t.querySelector<HTMLElement>('span.due')!;
                 if (task.dueDate < new Date()) {
@@ -272,12 +297,6 @@ export class AppController {
                     due.innerText = task.dueDate.toLocaleDateString('en', { weekday: 'short' });
                 }
             }
-
-            p.onclick = () => {
-                this.editTask(task);
-            }
-
-            const isDoneInput = t.querySelector('input')!;
 
             if (task.priority > 1) {
                 isDoneInput.addEventListener('change', async (event) => {
