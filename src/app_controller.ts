@@ -200,6 +200,8 @@ export class AppController {
         }
 
         this.render(...tasks);
+
+        this.tasksList.scrollTo({ top: 0 });
     }
 
     private stashForm() {

@@ -423,6 +423,7 @@ main>form button {
     position: relative;
     scroll-snap-align: start;
     min-width: 100%;
+    flex-shrink: 0;
 }
 
 .task {
@@ -571,10 +572,6 @@ svg {
 
 form+p {
     margin-top: 2rem;
-}
-
-main>p:last-child {
-    margin-bottom: 4rem;
 }
 
 footer {
