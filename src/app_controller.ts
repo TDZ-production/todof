@@ -184,7 +184,6 @@ export class AppController {
         return this.rerender();
     }
 
-
     private async filter(what?: string) {
         const week = await this.week;
         let tasks = [...week.tasks];
@@ -287,14 +286,19 @@ export class AppController {
             }
 
             t.querySelector<HTMLElement>('span.priority')!.classList.add(`prio${task.priority}`);
-            
+
             if (task.dueDate) {
                 const due = t.querySelector<HTMLElement>('span.due')!;
-                if (task.dueDate < new Date()) {
+                if (task.dueDate.toDateString() === new Date().toDateString()) {
+                    due.innerText = 'Today';
+
+                } else if (task.dueDate.toDateString() === new Date(new Date().setDate(new Date().getDate() + 1)).toDateString()) {
+                    due.innerText = 'Tomorrow';
+
+                } else if (task.dueDate < new Date()) {
                     t.classList.add('overdue');
-                    due.innerText = `${
-                        Math.floor((new Date().getTime() - task.dueDate.getTime()) / (1000 * 60 * 60 * 24))
-                    } days ago`
+                    due.innerText = `${Math.floor((new Date().getTime() - task.dueDate.getTime()) / (1000 * 60 * 60 * 24))
+                        } days ago`
                 } else {
                     due.innerText = task.dueDate.toLocaleDateString('en', { weekday: 'short' });
                 }
