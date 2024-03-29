@@ -417,12 +417,38 @@ main>form button {
 .task,
 .week,
 .year {
-    display: flex;
+    display: block;
     border-top: 1px solid var(--border-color);
     padding-left: .5rem;
     position: relative;
     scroll-snap-align: start;
     min-width: 100%;
+}
+
+.task {
+    white-space: nowrap;
+    overflow-x: scroll;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.task::-webkit-scrollbar {
+    display: none;
+}
+
+.task > * {
+    display: inline-flex;
+    align-items: center;
+}
+
+.task > main {
+    width: 100%;
+    white-space: initial;
+    /* flex-shrink: 0; */
+}
+
+.task input {
+    flex-shrink: 0;
 }
 
 .task[data-done=true] svg.notdone {
@@ -736,27 +762,7 @@ button.startWeek:hover {
     background-color: var(--pink-stickit-hover);
 }
 
-.taskStatus {
-    align-self: center;
-    padding: 0 0.3rem;
-}
-
-.checkboxContainer {
-    padding: 0.25rem;
-    margin: 0;
-    align-self: center;
-    cursor: pointer;
-    caret-color: transparent;
-    position: relative;
-}
-
-.intro {
-    margin-top: 3rem;
-}
-
 textarea {
-    width: 21rem;
-    height: 5rem;
     border: 2px solid var(--feedback-text-area-border-color);
     background-color: var(--feedback-text-area-color);
     font: inherit;
@@ -796,12 +802,12 @@ textarea:focus {
     color: var(--link-color);
 }
 
-.task:has(.toDelegate:checked) {
-    background: var(--add-task-color);
+.task:has(input:checked) {
+    background: var(--task-input-color);
 }
 
-.task[data-done=true] {
-    background: var(--task-input-color);
+.task:has(.toDelegate:checked) {
+    background: var(--add-task-color);
 }
 
 .weekIcon {
@@ -878,22 +884,6 @@ input.toDelegate:checked+span.weekIcon+span.weekIcon {
 
 .fadeoutMessage.fade-out {
     opacity: 0;
-}
-
-.taskStatus img {
-    fill: #919191;
-}
-
-.taskContainer {
-    display: flex;
-    flex-direction: row;
-    overflow: scroll;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-}
-
-.taskContainer::-webkit-scrollbar {
-    display: none;
 }
 
 .delete {
