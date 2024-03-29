@@ -602,7 +602,12 @@ footer textarea {
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
+    resize: none;
     color: var(--font-color);
+}
+
+footer textarea {
+    display: block;
 }
 
 .stars button {
@@ -764,10 +769,6 @@ textarea {
     background-color: var(--feedback-text-area-color);
     font: inherit;
     border-radius: .5rem;
-}
-
-textarea:focus {
-    color: var(--feedback-text-area-border-color);
 }
 
 .discordFeedback {
