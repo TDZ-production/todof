@@ -14,6 +14,7 @@ export class AppController {
     private priority: HTMLInputElement;
     private currentFilter: string;
     private filters: HTMLElement[];
+    private priorities: HTMLElement[];
 
     constructor(private weekService: WeekService, private root: HTMLElement, private template: HTMLTemplateElement) {
         this.menuButton = this.root.querySelector('.menu')!;
@@ -25,6 +26,7 @@ export class AppController {
         this.priority = this.form.querySelector<HTMLInputElement>('[name="priority"]')!;
         this.currentFilter = this.root.querySelector<HTMLInputElement>('.filters button.active')?.dataset.filter || 'all';
         this.filters = Array.from(this.root.querySelectorAll('.filters button'));
+        this.priorities = Array.from(this.root.querySelectorAll('.priorities button'));
 
         this.week = this.weekService.fetch()
             .catch((error) => {
@@ -76,12 +78,32 @@ export class AppController {
 
         this.form.onsubmit = this.submitForm;
 
+        this.priority.onchange = () => {
+            this.priorities.forEach(b => b.classList.remove('active'));
+            this.priorities[Number(this.priority.value) - 1]?.classList.add('active');
+        }
+        this.priorities.forEach((button) => {
+            button.addEventListener('click', () => {
+                this.setPriority(button.dataset.priority!);
+
+                this.submitForm();
+            });
+        });
+
+        this.filters.forEach(button => {
+            button.addEventListener('click', () => {
+                this.setFilter(button.dataset.filter!);
+            });
+        });
+
+        if (!('ontouchstart' in window)) {
+            this.desc.focus();
+        }
+
         this.desc.addEventListener('input', () => {
             this.footer.classList.toggle('valid', this.desc.checkValidity());
             fitDescriptionArea()
         });
-
-
 
         const fitDescriptionArea = () => {
             this.desc.style.height = 'auto';
@@ -115,25 +137,6 @@ export class AppController {
                 enterKeyCount = 0;
                 lastEnterIndex = -1;
             }
-        });
-
-        const priorities = this.root.querySelectorAll<HTMLInputElement>('.priorities button');
-        this.priority.onchange = () => {
-            priorities.forEach(b => b.classList.remove('active'));
-            priorities[Number(this.priority.value) - 1]?.classList.add('active');
-        }
-        priorities.forEach((button) => {
-            button.addEventListener('click', () => {
-                this.setPriority(button.dataset.priority!);
-
-                this.submitForm();
-            });
-        });
-
-        this.filters.forEach(button => {
-            button.addEventListener('click', () => {
-                this.setFilter(button.dataset.filter!);
-            });
         });
     }
 
