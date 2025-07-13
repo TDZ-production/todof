@@ -18,13 +18,12 @@ export class WeekService {
         })
             .then((response) => {
                 if (!response.ok) {
-                    console.error('Failed to update task', response);
                     throw new Error('Failed to update task');
                 }
                 return true;
             })
             .catch((error) => {
-                console.error('Failed to update task', error);
+                console.error(error);
                 return false;
             });
 
@@ -49,6 +48,19 @@ export class WeekService {
         });
     }
 
+    async deleteTask(task: Task) {
+        const response = await fetch(this.API + task.id, {
+            method: 'DELETE',
+            credentials: 'include'
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to delete task');
+        }
+
+        return true;
+    }
+
     async putTask(task: Task, data: FormData) {
         this.validate(data);
 
@@ -65,7 +77,6 @@ export class WeekService {
         });
 
         if (!response.ok) {
-            console.error('Failed to update task', response);
             throw new Error('Failed to update task');
         }
 
@@ -87,7 +98,6 @@ export class WeekService {
         });
 
         if (!response.ok) {
-            console.error('Failed to create task', response);
             throw new Error('Failed to create task');
         }
 

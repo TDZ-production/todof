@@ -16,7 +16,7 @@
     <section class="app home">
         <header>
             <button class="menu">
-                =
+                reload
             </button>
 
             <h2 class="week_number"></h2>
@@ -27,16 +27,15 @@
 
             <template>
                 <div class="task">
-                    <span class="priority"></span>
-                    <p class="desc"></p>
-                    <span class="due"></span>
-
-                    <input type="checkbox" name="done" />
-                    <!-- <aside>
-                    <button class="delete">
-                        X
-                    </button>
-                </aside> -->
+                    <main>
+                        <span class="priority"></span>
+                        <p class="desc"></p>
+                        <span class="due"></span>
+                        <input type="checkbox" name="done" />
+                    </main>
+                    <aside>
+                        <button class="delete">delete</button>
+                    </aside>
                 </div>
             </template>
 
@@ -62,7 +61,7 @@
                 <input type="hidden" name="priority" value="4" />
 
                 <textarea type="text" maxlength="255" placeholder="What's good, fam?" name="description" required
-                    autofocus autocomplete="off"></textarea>
+                    autocomplete="off" rows="1"></textarea>
 
             </form>
         </footer>
