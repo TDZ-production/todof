@@ -9,8 +9,8 @@
     "preview": "vite preview"
   },
   "devDependencies": {
-    "typescript": "^5.2.2",
-    "vite": "^5.2.0",
-    "vite-plugin-singlefile": "^2.0.1"
+    "typescript": "^5.8.3",
+    "vite": "^7.0.4",
+    "vite-plugin-singlefile": "^2.3.0"
   }
 }
