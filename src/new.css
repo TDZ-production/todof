@@ -1,3 +1,8 @@
+@font-face {
+    font-family: virgil;
+    src: url("Virgil.woff2");
+}
+
 :root {
     --feedback-text-area-color: #fcfcf6;
     --feedback-text-area-border-color: #b78300;
@@ -116,7 +121,7 @@
 body {
     margin: 0;
     padding: 0;
-    font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+    font-family: virgil, Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
     line-height: 1.5;
     background-color: var(--body-bg-color);
     color: var(--font-color);
@@ -526,7 +531,7 @@ main>form button {
 .prio4 {
     width: .35rem;
     position: absolute;
-    left: 0;
+    left: 1px;
     top: .5rem;
     bottom: .5rem;
 }
