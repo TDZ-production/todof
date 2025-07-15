@@ -206,7 +206,7 @@ form>p {
 
 header {
     position: relative;
-    padding: 1rem 0;
+    padding: .32rem 0 .78rem 0;
     background: var(--main-color);
     display: flex;
     justify-content: space-between;
@@ -243,6 +243,12 @@ button {
     border-radius: .5rem;
     padding: .8rem;
     color: inherit;
+}
+
+header button {
+    background: none;
+    border: none;
+    min-width: 3rem;
 }
 
 footer .ctrls {
@@ -1031,7 +1037,6 @@ html:not(.dark) .light_off {
         top: 0;
         left: 0;
         width: 100%;
-        padding: 1rem 0;
         padding-top: calc(1rem - env(safe-area-inset-bottom) / 2);
         height: 5rem;
         height: calc(5rem - env(safe-area-inset-bottom) / 2);
