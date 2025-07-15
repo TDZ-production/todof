@@ -1,6 +1,6 @@
 {
     "display": "standalone",
-    "start_url": "/app/index.html",
+    "start_url": "/api/0/todof/index.html",
     "background_color": "#fff0c1",
     "theme_color": "#fff0c1",
     "name": "todof*",
