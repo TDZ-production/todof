@@ -312,8 +312,7 @@ export class AppController {
 
                 } else if (task.dueDate < new Date()) {
                     t.classList.add('overdue');
-                    due.innerText = `${Math.floor((new Date().getTime() - task.dueDate.getTime()) / (1000 * 60 * 60 * 24))
-                        } days ago`
+                    due.innerText = `due in ${(this.taskService.dueIn(task)-1)} days`
                 } else {
                     due.innerText = task.dueDate.toLocaleDateString('en', { weekday: 'short' });
                 }
