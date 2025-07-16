@@ -1,6 +1,7 @@
 import { Task } from "./models/task";
 import { Week } from "./models/week";
 import { WeekService } from "./services/week_service";
+import { TaskService } from "./services/task_service";
 
 export class AppController {
     private week: Promise<Week>;
@@ -16,7 +17,7 @@ export class AppController {
     private filters: HTMLElement[];
     private priorities: HTMLElement[];
 
-    constructor(private weekService: WeekService, private root: HTMLElement, private template: HTMLTemplateElement) {
+    constructor(private taskService: TaskService, private weekService: WeekService, private root: HTMLElement, private template: HTMLTemplateElement) {
         this.menuButton = this.root.querySelector('.menu')!;
         this.tasksList = this.root.querySelector('main')!;
         this.footer = this.root.querySelector('footer')!;
@@ -205,9 +206,11 @@ export class AppController {
         }
 
         if (what.startsWith('priority')) {
-            tasks = tasks.filter(task => extended || task.priority > 1).sort((b, a) => (a.priority - b.priority) * 10e6 + (b.id - a.id));
+            tasks = tasks.filter(task => extended || task.priority > 1)
+                         .sort(this.taskService.prioritySort);
         } else if (what.startsWith('due')) {
-            tasks = tasks.filter(task => task.dueDate !== null).sort((a, b) => a.dueDate!.getTime() - b.dueDate!.getTime());
+            tasks = tasks.filter(task => task.dueDate !== null)
+                         .sort(this.taskService.dueSort);
         } else if (what.startsWith('notes')) {
             tasks = tasks.filter(task => task.priority === 1);
         }
