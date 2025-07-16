@@ -14,7 +14,7 @@ export class TaskService {
     };
 
     prioritySort = (a: Task, b: Task): number => {
-        return (b.priority - a.priority) * 1e6 + (this.dueIn(a) - this.dueIn(b)) * 1e5 + (a.id - b.id);
+        return (b.priority - a.priority) * 1e5 + (this.dueIn(a) - this.dueIn(b)) * 1e6 + (a.id - b.id);
     };
 
     dueSort = (a: Task, b: Task): number => {
