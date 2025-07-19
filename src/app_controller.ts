@@ -16,6 +16,7 @@ export class AppController {
     private currentFilter: string;
     private filters: HTMLElement[];
     private priorities: HTMLElement[];
+    private progressbar: HTMLElement;
 
     constructor(private taskService: TaskService, private weekService: WeekService, private root: HTMLElement, private template: HTMLTemplateElement) {
         this.menuButton = this.root.querySelector('.menu')!;
@@ -28,6 +29,7 @@ export class AppController {
         this.currentFilter = this.root.querySelector<HTMLInputElement>('.filters button.active')?.dataset.filter || 'all';
         this.filters = Array.from(this.root.querySelectorAll('.filters button'));
         this.priorities = Array.from(this.root.querySelectorAll('.priorities button'));
+        this.progressbar = this.root.querySelector('.week-progress')!;
 
         this.week = this.weekService.fetch()
             .catch((error) => {
@@ -39,6 +41,8 @@ export class AppController {
         this.menuButton.onclick = () => {
             window.location.reload();
         };
+
+        this.updateWeekProgressbar();
     }
 
 
@@ -278,6 +282,17 @@ export class AppController {
 
     private async rerender() {
         this.filter(this.currentFilter);
+    }
+
+    private updateWeekProgressbar() {
+        const now = new Date();
+        const weekProgress = now.getDay() === 0 ? 100 : ((now.getDay() - 1) / 6 + now.getHours() / 24 / 6) * 100;
+
+        if (weekProgress === 100) {
+            this.progressbar.classList.add("sunday");
+        }
+
+        this.progressbar.style.width = weekProgress + "%";
     }
 
     private render(...tasks: Task[]) {

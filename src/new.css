@@ -725,7 +725,7 @@ button.startWeek:hover {
     background-color: var(--pink-stickit-color);
 }
 
-.week-progressbar {
+.week-progress {
     position: absolute;
     z-index: 1;
     bottom: 0;
@@ -733,7 +733,7 @@ button.startWeek:hover {
     background-color: var(--font-color);
 }
 
-.week-progressbar.sunday {
+.week-progress.sunday {
     background-color: var(--pink-stickit-color);
 }
 
