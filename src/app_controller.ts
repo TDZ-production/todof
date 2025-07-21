@@ -299,7 +299,6 @@ export class AppController {
             const days = [3, 3, 2, 2, 2, 1, 0][new Date().getDay()];
             this.setDueIn(days);
         } else {
-            this.setDueDate(null);
             this.showCalendar();
         }
     }
