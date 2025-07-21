@@ -10,9 +10,10 @@ export class AppController {
     private form: HTMLFormElement;
     private menuButton: HTMLElement;
     private submitAction: () => Promise<void>;
-    private stash: [string, string] | null = null;
+    private stash: [string, string, string] | null = null;
     private desc: HTMLTextAreaElement;
     private priority: HTMLInputElement;
+    private duedate: HTMLInputElement;
     private currentFilter: string;
     private filters: HTMLElement[];
     private priorities: HTMLElement[];
@@ -26,6 +27,7 @@ export class AppController {
         this.submitAction = this.createTask;
         this.desc = this.form.querySelector<HTMLTextAreaElement>('[name="description"]')!;
         this.priority = this.form.querySelector<HTMLInputElement>('[name="priority"]')!;
+        this.duedate = this.form.querySelector<HTMLInputElement>('[name="dueDate"]')!;
         this.currentFilter = this.root.querySelector<HTMLInputElement>('.filters button.active')?.dataset.filter || 'all';
         this.filters = Array.from(this.root.querySelectorAll('.filters button'));
         this.priorities = Array.from(this.root.querySelectorAll('.priorities button'));
@@ -163,11 +165,6 @@ export class AppController {
         this.filter(filter);
     }
 
-    private setPriority(value: string) {
-        this.priority.value = value.toString();
-        this.priority.dispatchEvent(new Event("change"));
-    }
-
     private async createTask() {
         const task = await this.weekService.createTask(new FormData(this.form));
 
@@ -225,25 +222,39 @@ export class AppController {
     }
 
     private stashForm() {
-        this.stash = [this.priority.value, this.desc.value];
+        this.stash = [this.priority.value, this.desc.value, this.duedate.value];
         localStorage.setItem('stash', JSON.stringify(this.stash));
     }
 
     private popStash() {
         this.stash = JSON.parse(localStorage.getItem('stash') || 'null');
         if (this.stash) {
-            const [priority, description] = this.stash;
+            const [priority, description, duedate] = this.stash;
             this.stash = null;
             localStorage.removeItem('stash');
 
             this.setPriority(priority);
             this.setDescription(description);
+            this.setDueDate(duedate ? new Date(duedate) : null);
         }
     }
 
     private setDescription(description: string) {
         this.desc.value = description;
         this.desc.dispatchEvent(new Event('input'));
+    }
+
+    private setPriority(value: string) {
+        this.priority.value = value.toString();
+        this.priority.dispatchEvent(new Event("change"));
+    }
+
+    private setDueDate(dueDate: Date | null) {
+        if (dueDate) {
+            this.duedate.value = dueDate.toISOString().split('T')[0];
+        } else {
+            this.duedate.value = '';
+        }
     }
 
     private async deleteTask(task: Task) {
@@ -276,6 +287,7 @@ export class AppController {
         this.desc.focus();
 
         this.setPriority(task.priority.toString());
+        this.setDueDate(task.dueDate);
 
         this.submitAction = () => this.putTask(task);
     }

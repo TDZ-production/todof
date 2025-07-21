@@ -86,7 +86,11 @@ export class WeekService {
     async createTask(data: FormData): Promise<Task> {
         this.validate(data);
 
-        const task = { description: data.get('description')!.toString(), priority: Number(data.get('priority')), dueDate: null }
+        const task = {
+            description: data.get('description')!.toString(),
+            priority: Number(data.get('priority')),
+            dueDate: data.get('dueDate') ? new Date(data.get('dueDate')!.toString()) : null
+        }
 
         const response = await fetch(this.API, {
             method: 'POST',

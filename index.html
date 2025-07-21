@@ -42,6 +42,12 @@
         </main>
 
         <footer>
+            <nav class="due">
+                <button onclick="dueNextWeek()">next week</button>
+                <button onclick="dueThisWeek()">this week</button>
+                <button onclick="dueTomorrow()">tomorrow</button>
+                <button class="date-caption" onclick="showCalendar()">…</button>
+            </nav>
             <section class="ctrls">
                 <nav class="priorities">
                     <button data-priority="1">a note</button>
@@ -55,10 +61,15 @@
                     <button data-filter="due">due</button>
                     <button data-filter="notes">notes</button>
                 </nav>
+            </div>
             </section>
 
             <form>
                 <input type="hidden" name="priority" value="4" />
+
+                <label class="dateTime">
+                    <input type="date" name="dueDate" id="date">
+                </label>
 
                 <textarea type="text" maxlength="255" placeholder="What's good, fam?" name="description" required
                     autocomplete="off" rows="1"></textarea>
