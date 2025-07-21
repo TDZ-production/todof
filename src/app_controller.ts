@@ -124,12 +124,13 @@ export class AppController {
         });
 
         this.dueDate.onchange = () => {
+            this.desc.focus();
             this.setDueDateCaption(this.dueDate.valueAsDate);
             this.footer.classList.remove('date');
-            this.desc.focus();
         }
 
         this.dueDateCaption.onclick = () => {
+            this.desc.focus();
             this.footer.classList.add('date');
         }
 
