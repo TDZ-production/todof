@@ -183,6 +183,7 @@ export class AppController {
 
     private resetForm() {
         this.setDescription('');
+        this.setDueDate(null);
 
         this.tasksList.classList.remove("fade");
 
@@ -255,7 +256,6 @@ export class AppController {
         } else {
             this.duedate.value = '';
         }
-        this.duedate.dispatchEvent(new Event("change"));
     }
 
     private async deleteTask(task: Task) {

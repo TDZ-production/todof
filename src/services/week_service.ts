@@ -66,6 +66,7 @@ export class WeekService {
 
         task.description = data.get('description')!.toString();
         task.priority = Number(data.get('priority'));
+        task.dueDate = data.get('dueDate') ? new Date(data.get('dueDate')!.toString()) : null
 
         const response = await fetch(this.API + task.id, {
             method: 'PUT',
