@@ -282,7 +282,7 @@ footer nav {
     background-color: var(--outline);
     gap: 2px;
     padding: 2px 0;
-    box-shadow: 0 0 0 2.5px var(--main-color);
+    box-shadow: 0 0 0 2px var(--main-color);
 }
 
 nav.due {
@@ -290,7 +290,7 @@ nav.due {
 }
 
 footer .priorities {
-    box-shadow: 0 0 0 2.5px var(--prio2-color);
+    box-shadow: 0 0 0 2px var(--prio2-color);
 }
 
 footer .priorities>* {
@@ -298,7 +298,7 @@ footer .priorities>* {
 }
 
 footer .filters {
-    box-shadow: 0 0 0 2.5px var(--filter-background-color);
+    box-shadow: 0 0 0 2px var(--filter-background-color);
 }
 
 .filters .active {
