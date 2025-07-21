@@ -259,8 +259,9 @@ header button {
 footer .ctrls {
     display: flex;
     flex-direction: row-reverse;
-    transform: translateX(100%);
-    transition: transform 0.48s cubic-bezier(.17, -0.17, .68, 1.09);
+    transform: translateX(200%);
+    /* transition: transform 0.48s cubic-bezier(.17, -0.17, .68, 1.09); */
+    transition: transform 0.38s cubic-bezier(.11,-0.14,.91,1.16);
 }
 
 .ctrls>* {
@@ -269,6 +270,10 @@ footer .ctrls {
 }
 
 .valid .ctrls {
+    transform: translateX(100%);
+}
+
+.date .ctrls {
     transform: translateX(0);
 }
 
@@ -290,6 +295,18 @@ footer .priorities {
 
 footer .priorities>* {
     background-color: var(--prio2-color);
+}
+
+footer .filters {
+    box-shadow: 0 0 0 2.5px var(--filter-background-color);
+}
+
+.filters .active {
+    background-color: var(--filter-background-color);
+}
+
+footer .filters>* {
+    background-color: var(--main-bg-color);
 }
 
 footer nav>* {
