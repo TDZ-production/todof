@@ -131,7 +131,7 @@ export class AppController {
 
         this.dueDateCaption.onclick = () => {
             this.desc.focus();
-            this.footer.classList.add('date');
+            this.footer.classList.toggle('date');
         }
 
         const fitDescriptionArea = () => {
