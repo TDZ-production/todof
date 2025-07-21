@@ -266,10 +266,10 @@ export class AppController {
 
     private setDueDateCaption(dueDate: Date | null) {
         if (dueDate) {
-            this.dueDateCaption.innerText = dueDate.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric' });
+            this.dueDateCaption.innerText = dueDate.toLocaleDateString('en', { weekday: 'short', day: 'numeric' });
             this.dueDateCaption.classList.add('active');
         } else {
-            this.dueDateCaption.innerText = '…';
+            this.dueDateCaption.innerText = '📅';
             this.dueDateCaption.classList.remove('active');
         }
     }

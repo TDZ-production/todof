@@ -46,7 +46,7 @@
                 <button data-due="next-week">next week</button>
                 <button data-due="this-week">this week</button>
                 <button data-due="tomorrow">tomorrow</button>
-                <button data-due="" id="dueDateCaption">…</button>
+                <button data-due="">…</button>
             </nav>
             <section class="ctrls">
                 <nav class="priorities">
@@ -67,8 +67,10 @@
             <form>
                 <input type="hidden" name="priority" value="4" />
 
-                <label class="dateTime hidden">
-                    <input type="date" name="dueDate" id="date">
+                <p class="caption" id="dueDateCaption">📅</p>
+
+                <label class="dueDate hidden">
+                    <input type="date" name="dueDate" id="date" />
                 </label>
 
                 <textarea type="text" maxlength="255" placeholder="What's good, fam?" name="description" required

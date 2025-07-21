@@ -326,12 +326,6 @@ button {
     color: inherit;
 }
 
-.dateTime input:hover {
-    background-color: var(--button-hover-backgroud-color);
-    border: var(--button-hover-border-color);
-    color: var(--font-color);
-}
-
 button.cta {
     background-color: var(--pussy-submit-background-color);
     border: var(--pussy-submit-border-color);
@@ -419,6 +413,10 @@ main>form button {
     overflow: hidden;
 }
 
+.dueDate.hidden {
+    right: 0;
+}
+
 .fade {
     opacity: 0.4;
     filter: blur(1px);
@@ -485,27 +483,6 @@ main>form button {
 
 .task form {
     align-self: center;
-}
-
-.dateTime {
-    display: flex;
-    border-bottom: .1rem solid var(--dateTime-border-color);
-    background-color: var(--main-color);
-    gap: .5rem;
-    padding: .5rem;
-}
-
-.dateTime>* {
-    flex-grow: 1;
-    flex-basis: 80px;
-    font-size: 82%;
-    padding: .8rem .2rem;
-}
-
-.dateTime .active {
-    background: var(--dateTime-active_button-color);
-    border: var(--dateTime-active_button-border-color);
-    color: var(--main-bg-color);
 }
 
 .task .due {
@@ -623,6 +600,7 @@ footer textarea {
 
 footer textarea {
     display: block;
+    padding-right: 2.5rem;
 }
 
 .stars button {
@@ -1037,6 +1015,20 @@ html:not(.dark) .light_off {
     text-align: end;
     margin-right: 2.5rem;
     opacity: 0.6
+}
+
+#dueDateCaption {
+    position: absolute;
+    right: 0;
+    margin: 1rem;
+    font-size: 0.8rem;
+    width: 3em;
+}
+
+#dueDateCaption::first-line {
+  font-size: 1.2rem;
+  font-weight: bold;
+  line-height: 1.2;
 }
 
 @media (max-width: 459px) {
