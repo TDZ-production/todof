@@ -13,10 +13,11 @@ export class AppController {
     private stash: [string, string, string] | null = null;
     private desc: HTMLTextAreaElement;
     private priority: HTMLInputElement;
-    private duedate: HTMLInputElement;
+    private dueDate: HTMLInputElement;
     private currentFilter: string;
     private filters: HTMLElement[];
     private priorities: HTMLElement[];
+    private dueDates: HTMLElement[];
     private progressbar: HTMLElement;
 
     constructor(private taskService: TaskService, private weekService: WeekService, private root: HTMLElement, private template: HTMLTemplateElement) {
@@ -27,10 +28,11 @@ export class AppController {
         this.submitAction = this.createTask;
         this.desc = this.form.querySelector<HTMLTextAreaElement>('[name="description"]')!;
         this.priority = this.form.querySelector<HTMLInputElement>('[name="priority"]')!;
-        this.duedate = this.form.querySelector<HTMLInputElement>('[name="dueDate"]')!;
+        this.dueDate = this.form.querySelector<HTMLInputElement>('[name="dueDate"]')!;
         this.currentFilter = this.root.querySelector<HTMLInputElement>('.filters button.active')?.dataset.filter || 'all';
         this.filters = Array.from(this.root.querySelectorAll('.filters button'));
         this.priorities = Array.from(this.root.querySelectorAll('.priorities button'));
+        this.dueDates = Array.from(this.root.querySelectorAll('.due button'));
         this.progressbar = this.root.querySelector('.week-progress')!;
 
         this.week = this.weekService.fetch()
@@ -100,6 +102,12 @@ export class AppController {
         this.filters.forEach(button => {
             button.addEventListener('click', () => {
                 this.setFilter(button.dataset.filter!);
+            });
+        });
+
+        this.dueDates.forEach(button => {
+            button.addEventListener('click', () => {
+                this.setDueOn(button.dataset.due);
             });
         });
 
@@ -223,20 +231,20 @@ export class AppController {
     }
 
     private stashForm() {
-        this.stash = [this.priority.value, this.desc.value, this.duedate.value];
+        this.stash = [this.priority.value, this.desc.value, this.dueDate.value];
         localStorage.setItem('stash', JSON.stringify(this.stash));
     }
 
     private popStash() {
         this.stash = JSON.parse(localStorage.getItem('stash') || 'null');
         if (this.stash) {
-            const [priority, description, duedate] = this.stash;
+            const [priority, description, dueDate] = this.stash;
             this.stash = null;
             localStorage.removeItem('stash');
 
             this.setPriority(priority);
             this.setDescription(description);
-            this.setDueDate(duedate ? new Date(duedate) : null);
+            this.setDueDate(dueDate ? new Date(dueDate) : null);
         }
     }
 
@@ -252,9 +260,38 @@ export class AppController {
 
     private setDueDate(dueDate: Date | null) {
         if (dueDate) {
-            this.duedate.value = dueDate.toISOString().split('T')[0];
+            this.dueDate.valueAsDate = dueDate;
         } else {
-            this.duedate.value = '';
+            this.dueDate.value = '';
+        }
+    }
+
+    private setDueIn(days: number) {
+        const dueDate = new Date();
+        dueDate.setDate(dueDate.getDate() + days);
+        this.setDueDate(dueDate);
+    }
+
+    private setDueOn(due: string | undefined) {
+        if (due == 'tomorrow') {
+            this.setDueIn(1);
+        } else if (due == 'next-week') {
+            this.setDueIn(7);
+        } else if (due == 'this-week') {
+            const days = [3, 3, 2, 2, 2, 1, 0][new Date().getDay()];
+            this.setDueIn(days);
+        } else {
+            this.setDueDate(null);
+            this.showCalendar();
+        }
+    }
+
+    private showCalendar() {
+        const label = this.dueDate.parentElement as HTMLLabelElement;
+        label.dispatchEvent(new Event('click'));
+        if (document.activeElement !== this.dueDate) {
+            this.dueDate.focus();
+            this.dueDate.showPicker();
         }
     }
 
