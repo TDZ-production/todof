@@ -69,7 +69,7 @@ export class AppController {
             const touch = event.touches[0];
             let startY = touch.clientY;
 
-            // if taskList is not scrolled to the top, bail out
+            // if taskList is not scrolled to the top, drop it
             if (this.tasksList.scrollTop !== 0) {
                 return;
             }
