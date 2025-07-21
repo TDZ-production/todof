@@ -413,10 +413,6 @@ main>form button {
     overflow: hidden;
 }
 
-.dueDate.hidden {
-    right: 0;
-}
-
 .fade {
     opacity: 0.4;
     filter: blur(1px);
