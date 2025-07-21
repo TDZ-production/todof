@@ -126,6 +126,7 @@ export class AppController {
         this.dueDate.onchange = () => {
             this.setDueDateCaption(this.dueDate.valueAsDate);
             this.footer.classList.remove('date');
+            this.desc.focus();
         }
 
         this.dueDateCaption.onclick = () => {
