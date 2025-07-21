@@ -119,11 +119,17 @@ export class AppController {
 
         this.desc.addEventListener('input', () => {
             this.footer.classList.toggle('valid', this.desc.checkValidity());
+            this.footer.classList.remove('date');
             fitDescriptionArea()
         });
 
         this.dueDate.onchange = () => {
             this.setDueDateCaption(this.dueDate.valueAsDate);
+            this.footer.classList.remove('date');
+        }
+
+        this.dueDateCaption.onclick = () => {
+            this.footer.classList.add('date');
         }
 
         const fitDescriptionArea = () => {
@@ -200,6 +206,7 @@ export class AppController {
         this.setDueDate(null);
 
         this.tasksList.classList.remove("fade");
+        this.footer.classList.remove('date');
 
         this.popStash();
 
