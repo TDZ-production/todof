@@ -255,6 +255,7 @@ export class AppController {
         } else {
             this.duedate.value = '';
         }
+        this.duedate.dispatchEvent(new Event("change"));
     }
 
     private async deleteTask(task: Task) {
