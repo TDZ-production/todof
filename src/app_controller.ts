@@ -122,6 +122,10 @@ export class AppController {
             fitDescriptionArea()
         });
 
+        this.dueDate.onchange = () => {
+            this.setDueDateCaption(this.dueDate.valueAsDate);
+        }
+
         const fitDescriptionArea = () => {
             this.desc.style.height = 'auto';
             this.desc.style.height = `${this.desc.scrollHeight}px`;
@@ -277,7 +281,7 @@ export class AppController {
             this.dueDate.value = '';
         }
 
-        this.setDueDateCaption(dueDate);
+        this.dueDate.dispatchEvent(new Event('change'));
     }
 
     private setDueIn(days: number) {
