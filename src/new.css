@@ -37,11 +37,11 @@
     --star-border-color: 2px solid #dcc798;
     --border-color: #e9dbaf;
     --prio1-color: #c7e9fb;
-    --prio2-color: #c3eab5;
+    --prio2-color: #ddf8d4;
     --prio3-color: #f5e48d;
     --prio4-color: #ffb692;
     --prio1-hover-color: #c7e9fb;
-    --prio2-hover-color: #c3eab5;
+    --prio2-hover-color: #ace997;
     --prio3-hover-color: #f5e48d;
     --prio4-hover-color: #ffb692;
     --add-task-color: #ebffe7;
@@ -290,11 +290,15 @@ nav.due {
 }
 
 footer .priorities {
-    box-shadow: 0 0 0 2px var(--prio2-color);
+    box-shadow: 0 0 0 2px var(--prio2-hover-color);
 }
 
-footer .priorities>* {
+.priorities>* {
     background-color: var(--prio2-color);
+}
+
+.priorities .active {
+    background-color: var(--prio2-hover-color);
 }
 
 footer .filters {
@@ -305,15 +309,19 @@ footer .filters {
     background-color: var(--filter-background-color);
 }
 
+.due .active {
+    background-color: var(--main-color);
+}
+
 footer .filters>* {
-    background-color: var(--main-bg-color);
+ background-color: var(--main-bg-color);   
 }
 
 footer nav>* {
     flex-grow: 1;
     flex-basis: 80px;
     border: none;
-    background: var(--main-color);
+    background: var(--main-bg-color);
     border-radius: 0;
     color: var(--light-font-color);
 }
