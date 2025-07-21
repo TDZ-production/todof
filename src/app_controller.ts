@@ -14,6 +14,7 @@ export class AppController {
     private desc: HTMLTextAreaElement;
     private priority: HTMLInputElement;
     private dueDate: HTMLInputElement;
+    private dueDateCaption: HTMLButtonElement;
     private currentFilter: string;
     private filters: HTMLElement[];
     private priorities: HTMLElement[];
@@ -29,6 +30,7 @@ export class AppController {
         this.desc = this.form.querySelector<HTMLTextAreaElement>('[name="description"]')!;
         this.priority = this.form.querySelector<HTMLInputElement>('[name="priority"]')!;
         this.dueDate = this.form.querySelector<HTMLInputElement>('[name="dueDate"]')!;
+        this.dueDateCaption = this.root.querySelector('#dueDateCaption')!;
         this.currentFilter = this.root.querySelector<HTMLInputElement>('.filters button.active')?.dataset.filter || 'all';
         this.filters = Array.from(this.root.querySelectorAll('.filters button'));
         this.priorities = Array.from(this.root.querySelectorAll('.priorities button'));
@@ -258,12 +260,24 @@ export class AppController {
         this.priority.dispatchEvent(new Event("change"));
     }
 
+    private setDueDateCaption(dueDate: Date | null) {
+        if (dueDate) {
+            this.dueDateCaption.innerText = dueDate.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric' });
+            this.dueDateCaption.classList.add('active');
+        } else {
+            this.dueDateCaption.innerText = '…';
+            this.dueDateCaption.classList.remove('active');
+        }
+    }
+
     private setDueDate(dueDate: Date | null) {
         if (dueDate) {
             this.dueDate.valueAsDate = dueDate;
         } else {
             this.dueDate.value = '';
         }
+
+        this.setDueDateCaption(dueDate);
     }
 
     private setDueIn(days: number) {
