@@ -1052,6 +1052,10 @@ html:not(.dark) .light_off {
   line-height: 1.2;
 }
 
+#dueDateCaption.passive {
+    color: var(--light-font-color);
+}
+
 @media (max-width: 459px) {
     header {
         /*position: fixed;*/

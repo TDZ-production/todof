@@ -128,6 +128,7 @@ export class AppController {
             this.setDueDateCaption(this.dueDate.valueAsDate);
             this.footer.classList.remove('date');
         }
+        this.setDueDateCaption(null);
 
         this.dueDateCaption.onclick = () => {
             this.desc.focus();
@@ -274,15 +275,13 @@ export class AppController {
     }
 
     private setDueDateCaption(dueDate: Date | null) {
-        if (dueDate) {
-            const day = dueDate.toLocaleDateString('en-US', { day: 'numeric' });
-            const weekday = dueDate.toLocaleDateString('en-US', { weekday: 'short' });
-            this.dueDateCaption.innerText = `${day} ${weekday}`;
-            this.dueDateCaption.classList.add('active');
-        } else {
-            this.dueDateCaption.innerText = '📅';
-            this.dueDateCaption.classList.remove('active');
-        }
+        const date = dueDate || new Date();
+
+        const day = date.toLocaleDateString('en-US', { day: 'numeric' });
+        const weekday = date.toLocaleDateString('en-US', { weekday: 'short' });
+
+        this.dueDateCaption.innerText = `${day} ${weekday}`;
+        this.dueDateCaption.classList.toggle('passive', !dueDate);
     }
 
     private setDueDate(dueDate: Date | null) {
